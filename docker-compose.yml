@@ -1,0 +1,36 @@
+version: '3'
+
+networks:
+  my_network:
+    external: true
+    driver: bridge
+
+services:
+  db:
+    image: postgres:16.2-alpine3.19
+    container_name: postgres_db
+    env_file:
+      - .env
+    volumes:
+      - ./src/main/resources/initdb/init1-specsvcdb-schema.sql:/docker-entrypoint-initdb.d/init1-specsvcdb-schema.sql
+      - ./src/main/resources/initdb/init2-specsvcdb-data.sql:/docker-entrypoint-initdb.d/init2-specsvcdb-data.sql
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  specsvc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50000:50000"
+      - "50005:50005"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
