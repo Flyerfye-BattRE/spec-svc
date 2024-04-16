@@ -1,2 +1,3 @@
 # spec-svc
- Provides data sheet specifications about batteries
+
+Provides data sheet specifications about batteries
