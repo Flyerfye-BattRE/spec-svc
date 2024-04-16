@@ -8,7 +8,7 @@ networks:
 services:
   db:
     image: postgres:16.2-alpine3.19
-    container_name: postgres_db
+    container_name: specsvc_postgres_db
     env_file:
       - .env
     volumes:

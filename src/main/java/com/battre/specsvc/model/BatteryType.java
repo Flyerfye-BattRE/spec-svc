@@ -1,21 +1,51 @@
 package com.battre.specsvc.model;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-
+@Entity
+@Table(name = "BatteryTypes", schema = "SpecSvcDb")
 public class BatteryType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "battery_type_id")
     private int batteryTypeId;
+
+    @Column(name = "test_scheme_id")
     private int testSchemeId;
+
+    @Column(name = "mfc")
     private String mfc;
+
+    @Column(name = "mfc_id")
     private int mfcId;
+
+    @Column(name = "terminal_layout_id")
     private int terminalLayoutId;
+
+    @Column(name = "battery_tier_id")
     private int batteryTierId;
+
+    @Column(name = "composition")
     private String composition;
+
+    @Column(name = "safety_info")
     private String safetyInfo;
+
+    @Column(name = "min_voltage")
     private double minVoltage;
+
+    @Column(name = "max_voltage")
     private double maxVoltage;
+
+    @Column(name = "min_current")
     private double minCurrent;
+
+    @Column(name = "max_current")
     private double maxCurrent;
 
     public int getBatteryTypeId() {

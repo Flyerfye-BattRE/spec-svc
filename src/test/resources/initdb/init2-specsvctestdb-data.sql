@@ -19,4 +19,6 @@ INSERT INTO SpecSvcDb.TerminalLayouts (terminal_layout_id, terminal_layout_name)
 
 -- Insert statements for the "BatteryTypes" table
 INSERT INTO SpecSvcDb.BatteryTypes (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, battery_tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current) VALUES
-(1, 2, 'Test Manufacturer', 3, 4, 5, 'Test Composition', 'Test Safety', '0', '10', '0', '10');
+(1, 2, 'Test Manufacturer', 3, 4, 5, 'Test Composition', 'Test Safety', '0', '10', '0', '10'),
+(2, 1, 'Test Manufacturer', 2, 1, 7, 'Test Composition', 'Test Safety', '0', '20', '0', '40'),
+(3, 4, 'Test Manufacturer', 3, 4, 2, 'Test Composition', 'Test Safety', '0', '5', '0', '20');

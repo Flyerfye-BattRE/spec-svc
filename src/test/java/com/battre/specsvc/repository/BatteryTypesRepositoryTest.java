@@ -12,19 +12,21 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
+import java.util.List;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 // Ensuring the gRPC port doesn't conflict when running this test in parallel with the main application tests
 @SpringBootTest(properties = {"grpc.server.port=50006"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class BatteryTypeRepositoryTest {
-    private static final Logger logger = Logger.getLogger(BatteryTypeRepositoryTest.class.getName());
+class BatteryTypesRepositoryTest {
+    private static final Logger logger = Logger.getLogger(BatteryTypesRepositoryTest.class.getName());
 
     @Autowired
-    private BatteryTypeRepository batteryTypeRepository;
+    private BatteryTypesRepository batteryTypesRepository;
 
 
     @Autowired
@@ -36,7 +38,7 @@ class BatteryTypeRepositoryTest {
         executeSqlScript("initdb/init1-specsvctestdb-schema.sql");
         executeSqlScript("initdb/init2-specsvctestdb-data.sql");
 
-        logger.log(Level.INFO, "test setUp finished successfully");
+        logger.info("test setUp finished successfully");
     }
 
 
@@ -50,11 +52,12 @@ class BatteryTypeRepositoryTest {
     @Test
     void testGetRandomBatteryType() {
         // Call the method under test
-        BatteryType randomBatteryType = batteryTypeRepository.getRandomBatteryType();
+        List<BatteryType> randomBatteries = batteryTypesRepository.getRandomBatteries(3);
 
         // Verify the result
-        assertNotNull(randomBatteryType);
+        assertNotNull(randomBatteries);
+        assertEquals(3, randomBatteries.size());
         // All entries in the test database are expected to have the same test manufacturer
-        assertEquals("Test Manufacturer", randomBatteryType.getMfc());
+        assertEquals("Test Manufacturer", randomBatteries.get(0).getMfc());
     }
 }

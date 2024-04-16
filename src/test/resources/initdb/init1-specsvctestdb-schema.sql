@@ -3,6 +3,8 @@
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS SpecSvcDb;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS SpecSvcDb.TerminalLayouts (
   terminal_layout_id SERIAL PRIMARY KEY,
   terminal_layout_name VARCHAR(10) NOT NULL

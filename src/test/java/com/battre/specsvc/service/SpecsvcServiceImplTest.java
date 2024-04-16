@@ -1,13 +1,15 @@
 package com.battre.specsvc.service;
 
 import com.battre.specsvc.model.BatteryType;
-import com.battre.specsvc.repository.BatteryTypeRepository;
-import com.battre.stubs.services.SpecSvcEmptyRequest;
-import com.battre.stubs.services.SpecSvcResponse;
+import com.battre.specsvc.repository.BatteryTypesRepository;
+import com.battre.stubs.services.GetRandomBatteryTypesRequest;
+import com.battre.stubs.services.GetRandomBatteryTypesResponse;
 import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,10 +17,10 @@ import static org.mockito.Mockito.when;
 public class SpecsvcServiceImplTest {
 
     @Mock
-    private BatteryTypeRepository batteryTypeRepository;
+    private BatteryTypesRepository batteryTypesRepository;
 
     @Mock
-    private StreamObserver<SpecSvcResponse> responseObserver;
+    private StreamObserver<GetRandomBatteryTypesResponse> responseObserver;
 
     private SpecsvcServiceImpl specsvcServiceImpl;
 
@@ -28,14 +30,15 @@ public class SpecsvcServiceImplTest {
 
         BatteryType testBattery = new BatteryType();
         testBattery.setBatteryTypeId(5);
-        when(batteryTypeRepository.getRandomBatteryType()).thenReturn(testBattery);
+        List<BatteryType> testBatteries = List.of(testBattery);
+        when(batteryTypesRepository.getRandomBatteries(1)).thenReturn(testBatteries);
 
-        specsvcServiceImpl = new SpecsvcServiceImpl(batteryTypeRepository);
+        specsvcServiceImpl = new SpecsvcServiceImpl(batteryTypesRepository);
 
-        SpecSvcEmptyRequest request = SpecSvcEmptyRequest.newBuilder().build();
+        GetRandomBatteryTypesRequest request = GetRandomBatteryTypesRequest.newBuilder().setNumBatteryTypes(1).build();
 
-        specsvcServiceImpl.getRandomBatteryType(request, responseObserver);
-        verify(batteryTypeRepository).getRandomBatteryType();
+        specsvcServiceImpl.getRandomBatteryTypes(request, responseObserver);
+        verify(batteryTypesRepository).getRandomBatteries(1);
     }
 }
 
