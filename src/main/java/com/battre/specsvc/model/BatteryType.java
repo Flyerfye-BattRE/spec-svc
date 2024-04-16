@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "BatteryTypes", schema = "SpecSvcDb")
+@Table(name = "BatteryTypes", schema = "SpecSvcSchema")
 public class BatteryType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,21 +1,19 @@
 -- -----------------------------------------------------
--- Schema SpecSvcDb
+-- Schema SpecSvcSchema
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS SpecSvcDb;
+CREATE SCHEMA IF NOT EXISTS SpecSvcSchema;
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-CREATE TABLE IF NOT EXISTS SpecSvcDb.TerminalLayouts (
+CREATE TABLE IF NOT EXISTS SpecSvcSchema.TerminalLayouts (
   terminal_layout_id SERIAL PRIMARY KEY,
   terminal_layout_name VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS SpecSvcDb.BatteryTiers (
+CREATE TABLE IF NOT EXISTS SpecSvcSchema.BatteryTiers (
   battery_tier_id SERIAL PRIMARY KEY,
   battery_tier VARCHAR(2) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS SpecSvcDb.BatteryTypes (
+CREATE TABLE IF NOT EXISTS SpecSvcSchema.BatteryTypes (
   battery_type_id SERIAL PRIMARY KEY,
   test_scheme_id INT NOT NULL,
   mfc VARCHAR(45) NOT NULL,
