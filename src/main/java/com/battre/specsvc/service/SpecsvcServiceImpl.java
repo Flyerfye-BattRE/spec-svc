@@ -20,48 +20,48 @@ import java.util.stream.Collectors;
 @GrpcService
 public class SpecsvcServiceImpl extends SpecSvcGrpc.SpecSvcImplBase {
     private static final Logger logger = Logger.getLogger(SpecsvcServiceImpl.class.getName());
-    private final BatteryTypesRepository batteryTypesRepository;
+    private final BatteryTypesRepository batTypRepo;
 
     @Autowired
-    public SpecsvcServiceImpl(BatteryTypesRepository batteryTypesRepository) {
-        this.batteryTypesRepository = batteryTypesRepository;
+    public SpecsvcServiceImpl(BatteryTypesRepository batTypRepo) {
+        this.batTypRepo = batTypRepo;
     }
 
     @Override
     public void getRandomBatteryTypes(GetRandomBatteryTypesRequest request, StreamObserver<GetRandomBatteryTypesResponse> responseObserver) {
-        logger.info("getRandomBatteryTypes started");
+        logger.info("getRandomBatteryTypes() started");
 
         int numBatteryTypes = request.getNumBatteryTypes();
-        List<BatteryType> batteries = batteryTypesRepository.getRandomBatteries(numBatteryTypes);
+        List<BatteryType> batteries = batTypRepo.getRandomBatteries(numBatteryTypes);
         List<BatteryTypeTierPair> batteryTypesTierInfo = getBatteryTypeTierInfo(batteries);
 
-        logger.info("getRandomBatteryTypes response : " + batteryTypesTierInfo);
+        logger.info("getRandomBatteryTypes() response : " + batteryTypesTierInfo);
 
-        GetRandomBatteryTypesResponse myResponse = GetRandomBatteryTypesResponse.newBuilder()
-                .addAllPairs(batteryTypesTierInfo)
+        GetRandomBatteryTypesResponse response = GetRandomBatteryTypesResponse.newBuilder()
+                .addAllBatteries(batteryTypesTierInfo)
                 .build();
 
-        responseObserver.onNext(myResponse);
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
 
-        logger.info("getRandomBatteryTypes completed");
+        logger.info("getRandomBatteryTypes() completed");
     }
 
     @Override
     public void getBatteryTerminalLayouts(GetBatteryTerminalLayoutsRequest request, StreamObserver<GetBatteryTerminalLayoutsResponse> responseObserver) {
-        logger.info("getBatteryTerminalLayouts started");
+        logger.info("getBatteryTerminalLayouts() started");
 
-        List<BatteryType> batteries = batteryTypesRepository.getBatteriesByTypeId(request.getBatteryTypeIdsList());
+        List<BatteryType> batteries = batTypRepo.getBatteriesByTypeId(request.getBatteryTypeIdsList());
         List<BatteryTypeTerminalPair> batteryTypesTerminalsInfo = getBatteryTypeTerminalsInfo(batteries);
 
-        GetBatteryTerminalLayoutsResponse myResponse = GetBatteryTerminalLayoutsResponse.newBuilder()
-                .addAllPairs(batteryTypesTerminalsInfo)
+        GetBatteryTerminalLayoutsResponse response = GetBatteryTerminalLayoutsResponse.newBuilder()
+                .addAllBatteries(batteryTypesTerminalsInfo)
                 .build();
 
-        responseObserver.onNext(myResponse);
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
 
-        logger.info("getBatteryTerminalLayouts completed");
+        logger.info("getBatteryTerminalLayouts() completed");
     }
 
     private List<BatteryTypeTierPair> getBatteryTypeTierInfo(List<BatteryType> batteryTypes) {
