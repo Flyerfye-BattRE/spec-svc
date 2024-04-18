@@ -13,6 +13,6 @@ public interface BatteryTypesRepository extends JpaRepository<BatteryType, Integ
     @Query("SELECT bt FROM BatteryType bt ORDER BY RANDOM() LIMIT :numValues")
     List<BatteryType> getRandomBatteries(@Param("numValues") int numValues);
 
-    @Query("SELECT bt FROM BatteryType bt WHERE batteryTypeId IN :ids")
+    @Query("SELECT bt FROM BatteryType bt WHERE batteryTypeId IN :ids ORDER BY batteryTypeId")
     List<BatteryType> getBatteriesByTypeId(@Param("ids") List<Integer> ids);
 }
