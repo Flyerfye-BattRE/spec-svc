@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS SpecSvcSchema.BatteryTiers (
   battery_tier VARCHAR(2) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS SpecSvcSchema.BatteryTypes (
+CREATE TABLE IF NOT EXISTS SpecSvcSchema.BatteryInfo (
   battery_type_id SERIAL PRIMARY KEY,
   test_scheme_id INT NOT NULL,
   mfc VARCHAR(45) NOT NULL,

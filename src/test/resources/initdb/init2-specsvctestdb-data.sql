@@ -28,12 +28,12 @@ WHERE NOT EXISTS (
 );
 
 -- Insert statements for the "BatteryTypes" table
-INSERT INTO SpecSvcSchema.BatteryTypes (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, battery_tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
+INSERT INTO SpecSvcSchema.BatteryInfo (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, battery_tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
 SELECT * FROM (VALUES
     (1, 2, 'Test Manufacturer', 3, 4, 5, 'Test Composition', 'Test Safety', '0', '10', '0', '10'),
     (2, 1, 'Test Manufacturer', 2, 1, 7, 'Test Composition', 'Test Safety', '0', '20', '0', '40'),
     (3, 4, 'Test Manufacturer', 3, 4, 2, 'Test Composition', 'Test Safety', '0', '5', '0', '20')
 ) AS v (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, battery_tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
 WHERE NOT EXISTS (
-    SELECT 1 FROM SpecSvcSchema.BatteryTypes
+    SELECT 1 FROM SpecSvcSchema.BatteryInfo
 );

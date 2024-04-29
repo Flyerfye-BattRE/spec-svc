@@ -1,11 +1,10 @@
 package com.battre.specsvc.repository;
 
-import com.battre.specsvc.model.BatteryType;
+import com.battre.specsvc.model.BatteryInfoType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -18,22 +17,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-public class BatteryTypesRepositoryTest {
-    private static final Logger logger = Logger.getLogger(BatteryTypesRepositoryTest.class.getName());
+public class BatteryInfoRepositoryTest {
+    private static final Logger logger = Logger.getLogger(BatteryInfoRepositoryTest.class.getName());
 
     @Autowired
-    private BatteryTypesRepository batteryTypesRepository;
+    private BatteryInfoRepository batteryInfoRepository;
 
     @Test
     public void testGetRandomBatteries() {
         // Call the method under test
-        List<BatteryType> randomBatteries = batteryTypesRepository.getRandomBatteries(3);
+        List<BatteryInfoType> randomBatteries = batteryInfoRepository.getRandomBatteries(3);
 
         // Verify the result
         assertNotNull(randomBatteries);
         assertEquals(3, randomBatteries.size());
         // All entries in the test database are expected to have the same test manufacturer
-        for (BatteryType battery : randomBatteries) {
+        for (BatteryInfoType battery : randomBatteries) {
             assertEquals("Test Manufacturer", battery.getMfc());
         }
     }
@@ -43,7 +42,7 @@ public class BatteryTypesRepositoryTest {
         List<Integer> batteryTypeIds = Arrays.asList(1, 2);
 
         // Call the method under test
-        List<BatteryType> selectBatteries = batteryTypesRepository.getBatteriesByTypeId(batteryTypeIds);
+        List<BatteryInfoType> selectBatteries = batteryInfoRepository.getBatteriesByTypeId(batteryTypeIds);
 
         // Verify the result
         assertNotNull(selectBatteries);

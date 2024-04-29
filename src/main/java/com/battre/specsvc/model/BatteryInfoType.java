@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "BatteryTypes", schema = "SpecSvcSchema")
-public class BatteryType {
+@Table(name = "BatteryInfo", schema = "SpecSvcSchema")
+public class BatteryInfoType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "battery_type_id")
@@ -47,6 +47,15 @@ public class BatteryType {
 
     @Column(name = "max_current")
     private double maxCurrent;
+
+    public BatteryInfoType() {
+    }
+
+    public BatteryInfoType(int batteryTypeId, int terminalLayoutId, int batteryTierId) {
+        this.batteryTypeId = batteryTypeId;
+        this.terminalLayoutId = terminalLayoutId;
+        this.batteryTierId = batteryTierId;
+    }
 
     public int getBatteryTypeId() {
         return batteryTypeId;
