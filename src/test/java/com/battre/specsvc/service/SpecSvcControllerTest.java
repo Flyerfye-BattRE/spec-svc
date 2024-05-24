@@ -1,5 +1,6 @@
 package com.battre.specsvc.service;
 
+import com.battre.specsvc.controller.SpecSvcController;
 import com.battre.specsvc.model.BatteryInfoType;
 import com.battre.specsvc.repository.BatteryInfoRepository;
 import com.battre.stubs.services.GetBatteryTerminalLayoutsRequest;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SpecSvcImplTest {
+public class SpecSvcControllerTest {
     @Mock
     private BatteryInfoRepository batTypRepo;
 
@@ -31,14 +32,14 @@ public class SpecSvcImplTest {
     @Mock
     private StreamObserver<GetBatteryTerminalLayoutsResponse> responseGetBatteryTerminalLayoutsResponse;
 
-    private SpecSvcImpl specSvcImpl;
+    private SpecSvcController specSvcController;
 
     private AutoCloseable closeable;
 
     @BeforeEach
     public void openMocks() {
         closeable = MockitoAnnotations.openMocks(this);
-        specSvcImpl = new SpecSvcImpl(batTypRepo);
+        specSvcController = new SpecSvcController(batTypRepo);
     }
 
     @AfterEach
@@ -55,7 +56,7 @@ public class SpecSvcImplTest {
 
         GetRandomBatteryTypesRequest request = GetRandomBatteryTypesRequest.newBuilder().setNumBatteryTypes(1).build();
 
-        specSvcImpl.getRandomBatteryTypes(request, responseGetRandomBatteryTypesResponse);
+        specSvcController.getRandomBatteryTypes(request, responseGetRandomBatteryTypesResponse);
         verify(batTypRepo).getRandomBatteries(1);
         // Capture the response
         ArgumentCaptor<GetRandomBatteryTypesResponse> responseCaptor = ArgumentCaptor.forClass(GetRandomBatteryTypesResponse.class);
@@ -82,7 +83,7 @@ public class SpecSvcImplTest {
         GetBatteryTerminalLayoutsRequest request =
                 GetBatteryTerminalLayoutsRequest.newBuilder().addAllBatteryTypeIds(testBatteryTypeIds).build();
 
-        specSvcImpl.getBatteryTerminalLayouts(request, responseGetBatteryTerminalLayoutsResponse);
+        specSvcController.getBatteryTerminalLayouts(request, responseGetBatteryTerminalLayoutsResponse);
         verify(batTypRepo).getBatteriesByTypeId(testBatteryTypeIds);
         // Capture the response
         ArgumentCaptor<GetBatteryTerminalLayoutsResponse> responseCaptor = ArgumentCaptor.forClass(GetBatteryTerminalLayoutsResponse.class);
@@ -98,4 +99,3 @@ public class SpecSvcImplTest {
         }
     }
 }
-

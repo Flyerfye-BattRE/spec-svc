@@ -1,4 +1,4 @@
-package com.battre.specsvc.service;
+package com.battre.specsvc.controller;
 
 import com.battre.specsvc.model.BatteryInfoType;
 import com.battre.specsvc.repository.BatteryInfoRepository;
@@ -18,12 +18,12 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @GrpcService
-public class SpecSvcImpl extends SpecSvcGrpc.SpecSvcImplBase {
-    private static final Logger logger = Logger.getLogger(SpecSvcImpl.class.getName());
+public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
+    private static final Logger logger = Logger.getLogger(SpecSvcController.class.getName());
     private final BatteryInfoRepository batTypRepo;
 
     @Autowired
-    public SpecSvcImpl(BatteryInfoRepository batTypRepo) {
+    public SpecSvcController(BatteryInfoRepository batTypRepo) {
         this.batTypRepo = batTypRepo;
     }
 
