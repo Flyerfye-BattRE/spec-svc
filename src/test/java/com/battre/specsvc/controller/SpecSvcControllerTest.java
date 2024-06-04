@@ -152,7 +152,7 @@ public class SpecSvcControllerTest {
             double maxVoltage,
             double minCurrent,
             double maxCurrent
-        ) {
+    ) {
         BatteryInfoType returnedBattery = new BatteryInfoType(typeId, terminalLayoutId, tierId);
         returnedBattery.setMfc(mfc);
         returnedBattery.setComposition(composition);

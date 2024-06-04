@@ -31,7 +31,6 @@ public class BatteryTiersRepositoryTest {
         assertEquals(8, batteryTiers.size());
 
 
-
         // Check properties of first battery tier returned
         assertEquals(1, batteryTiers.get(0).getBatteryTierId());
         assertEquals("AX", batteryTiers.get(0).getBatteryTierLabel());
