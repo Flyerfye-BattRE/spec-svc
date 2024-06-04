@@ -37,22 +37,42 @@ public class BatteryInfoRepositoryTest {
     }
 
     @Test
-    public void testGetBatteriesByTypeId() {
+    public void testGetBatterySpecsByTypeId() {
         List<Integer> batteryTypeIds = Arrays.asList(1, 2);
 
         // Call the method under test
-        List<BatteryInfoType> selectBatteries = batteryInfoRepository.getBatteriesByTypeId(batteryTypeIds);
+        List<BatteryInfoType> selectBatterySpecs = batteryInfoRepository.getBatterySpecsByTypeId(batteryTypeIds);
 
         // Verify the result
-        assertNotNull(selectBatteries);
-        assertEquals(2, selectBatteries.size());
+        assertNotNull(selectBatterySpecs);
+        assertEquals(2, selectBatterySpecs.size());
 
         // Check properties of first battery returned
-        assertEquals(1, selectBatteries.get(0).getBatteryTypeId());
-        assertEquals(5, selectBatteries.get(0).getBatteryTierId());
+        assertEquals(1, selectBatterySpecs.get(0).getBatteryTypeId());
+        assertEquals(5, selectBatterySpecs.get(0).getTierId());
 
         // Check properties of second battery returned
-        assertEquals(2, selectBatteries.get(1).getBatteryTypeId());
-        assertEquals(7, selectBatteries.get(1).getBatteryTierId());
+        assertEquals(2, selectBatterySpecs.get(1).getBatteryTypeId());
+        assertEquals(7, selectBatterySpecs.get(1).getTierId());
+    }
+
+    @Test
+    public void testGetAllBatterySpecs() {
+        // Call the method under test
+        List<BatteryInfoType> allBatterySpecs = batteryInfoRepository.getAllBatterySpecs();
+
+        // Verify the result
+        assertNotNull(allBatterySpecs);
+        assertEquals(3, allBatterySpecs.size());
+
+        // Check properties of first battery returned
+        assertEquals(1, allBatterySpecs.get(0).getBatteryTypeId());
+        assertEquals(5, allBatterySpecs.get(0).getTierId());
+        assertEquals(10, allBatterySpecs.get(0).getMaxVoltage());
+
+        // Check properties of second battery returned
+        assertEquals(2, allBatterySpecs.get(1).getBatteryTypeId());
+        assertEquals(7, allBatterySpecs.get(1).getTierId());
+        assertEquals(40, allBatterySpecs.get(1).getMaxCurrent());
     }
 }

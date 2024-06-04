@@ -1,5 +1,5 @@
 -- Insert statements for the "BatteryTiers" table
-INSERT INTO SpecSvcSchema.BatteryTiers (battery_tier_id, battery_tier)
+INSERT INTO SpecSvcSchema.BatteryTiers (tier_id, tier_label)
 SELECT * FROM (VALUES
     (1, 'AX'),
     (2, 'CX'),
@@ -9,7 +9,7 @@ SELECT * FROM (VALUES
     (6, 'T'),
     (7, 'XK'),
     (8, 'XL')
-) AS v (battery_tier_id, battery_tier)
+) AS v (tier_id, tier_label)
 WHERE NOT EXISTS (
     SELECT 1 FROM SpecSvcSchema.BatteryTiers
 );
@@ -28,7 +28,7 @@ WHERE NOT EXISTS (
 );
 
 -- Insert statements for the "BatteryTypes" table
-INSERT INTO SpecSvcSchema.BatteryInfo (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, battery_tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
+INSERT INTO SpecSvcSchema.BatteryInfo (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
 SELECT * FROM (VALUES
     (1, 3, 'Big Batteries Inc', 1, 5, 1, 'Lead-Acid', 'Prevent Liquid Seepage', 220.000, 740.000, 324.000, 772.000),
     (2, 2, 'Super Charge Ltd', 2, 4, 2, 'Nickel-Cadmium', '', 210.000, 780.000, 335.000, 859.000),
@@ -41,7 +41,7 @@ SELECT * FROM (VALUES
     (9, 9, 'Big Batteries Inc', 1, 5, 7, 'Zinc-Carbon', 'Temperature Management', 280.000, 710.000, 292.000, 812.000),
     (10, 8, 'Zip Zap Industries', 5, 4, 6, 'Lead-Acid', '', 180.000, 700.000, 279.000, 864.000),
     (11, 4, 'Super Charge Ltd', 2, 3, 5, 'Nickel-Cadmium', 'Prevent Liquid Seepage', 320.000, 805.000, 284.000, 891.000)
-) AS v (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, battery_tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
+) AS v (battery_type_id, test_scheme_id, mfc, mfc_id, terminal_layout_id, tier_id, composition, safety_info, min_voltage, max_voltage, min_current, max_current)
 WHERE NOT EXISTS (
     SELECT 1 FROM SpecSvcSchema.BatteryInfo
 );

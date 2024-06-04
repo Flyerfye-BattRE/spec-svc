@@ -1,11 +1,19 @@
 package com.battre.specsvc.controller;
 
 import com.battre.specsvc.model.BatteryInfoType;
+import com.battre.specsvc.model.BatteryTiersType;
 import com.battre.specsvc.repository.BatteryInfoRepository;
+import com.battre.specsvc.repository.BatteryTiersRepository;
+import com.battre.stubs.services.BatterySpecs;
+import com.battre.stubs.services.BatteryTier;
 import com.battre.stubs.services.BatteryTypeTerminalPair;
 import com.battre.stubs.services.BatteryTypeTierPair;
+import com.battre.stubs.services.GetAllBatterySpecsRequest;
+import com.battre.stubs.services.GetAllBatterySpecsResponse;
 import com.battre.stubs.services.GetBatteryTerminalLayoutsRequest;
 import com.battre.stubs.services.GetBatteryTerminalLayoutsResponse;
+import com.battre.stubs.services.GetBatteryTiersRequest;
+import com.battre.stubs.services.GetBatteryTiersResponse;
 import com.battre.stubs.services.GetRandomBatteryTypesRequest;
 import com.battre.stubs.services.GetRandomBatteryTypesResponse;
 import com.battre.stubs.services.SpecSvcGrpc;
@@ -20,11 +28,13 @@ import java.util.stream.Collectors;
 @GrpcService
 public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
     private static final Logger logger = Logger.getLogger(SpecSvcController.class.getName());
-    private final BatteryInfoRepository batTypRepo;
+    private final BatteryInfoRepository batteryInfoRepo;
+    private final BatteryTiersRepository batteryTiersRepo;
 
     @Autowired
-    public SpecSvcController(BatteryInfoRepository batTypRepo) {
-        this.batTypRepo = batTypRepo;
+    public SpecSvcController(BatteryInfoRepository batteryInfoRepo, BatteryTiersRepository batteryTiersRepo) {
+        this.batteryInfoRepo = batteryInfoRepo;
+        this.batteryTiersRepo = batteryTiersRepo;
     }
 
     @Override
@@ -32,7 +42,7 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
         logger.info("getRandomBatteryTypes() started");
 
         int numBatteryTypes = request.getNumBatteryTypes();
-        List<BatteryInfoType> batteries = batTypRepo.getRandomBatteries(numBatteryTypes);
+        List<BatteryInfoType> batteries = batteryInfoRepo.getRandomBatteries(numBatteryTypes);
         List<BatteryTypeTierPair> batteryTypesTierInfo = getBatteryTypeTierInfo(batteries);
 
         logger.info("getRandomBatteryTypes() response : " + batteryTypesTierInfo);
@@ -51,7 +61,7 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
     public void getBatteryTerminalLayouts(GetBatteryTerminalLayoutsRequest request, StreamObserver<GetBatteryTerminalLayoutsResponse> responseObserver) {
         logger.info("getBatteryTerminalLayouts() started");
 
-        List<BatteryInfoType> batteries = batTypRepo.getBatteriesByTypeId(request.getBatteryTypeIdsList());
+        List<BatteryInfoType> batteries = batteryInfoRepo.getBatterySpecsByTypeId(request.getBatteryTypeIdsList());
         List<BatteryTypeTerminalPair> batteryTypesTerminalsInfo = getBatteryTypeTerminalsInfo(batteries);
 
         GetBatteryTerminalLayoutsResponse response = GetBatteryTerminalLayoutsResponse.newBuilder()
@@ -64,11 +74,63 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
         logger.info("getBatteryTerminalLayouts() completed");
     }
 
+    @Override
+    public void getAllBatterySpecs(GetAllBatterySpecsRequest request, StreamObserver<GetAllBatterySpecsResponse> responseObserver) {
+        logger.info("getAllBatterySpecs() started");
+
+        List<BatteryInfoType> batterySpecs = batteryInfoRepo.getAllBatterySpecs();
+
+        GetAllBatterySpecsResponse.Builder responseBuilder = GetAllBatterySpecsResponse.newBuilder();
+        for (BatteryInfoType batterySpec : batterySpecs) {
+            BatterySpecs.Builder batteryTierBuilder = BatterySpecs.newBuilder()
+                    .setBatteryTypeId(batterySpec.getBatteryTypeId())
+                    .setMfc(batterySpec.getMfc())
+                    .setTerminalLayoutId(batterySpec.getTerminalLayoutId())
+                    .setTierId(batterySpec.getTierId())
+                    .setComposition(batterySpec.getComposition())
+                    .setSafetyInfo(batterySpec.getSafetyInfo())
+                    .setMinVoltage(batterySpec.getMinVoltage())
+                    .setMaxVoltage(batterySpec.getMaxVoltage())
+                    .setMinCurrent(batterySpec.getMinCurrent())
+                    .setMaxCurrent(batterySpec.getMaxCurrent());
+
+            responseBuilder.addBatterySpecsList(batteryTierBuilder.build());
+        }
+
+        GetAllBatterySpecsResponse response = responseBuilder.build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+
+        logger.info("getAllBatterySpecs() completed");
+    }
+
+    @Override
+    public void getBatteryTiers(GetBatteryTiersRequest request, StreamObserver<GetBatteryTiersResponse> responseObserver) {
+        logger.info("getBatteryTiers() started");
+
+        List<BatteryTiersType> batteryTiers = batteryTiersRepo.getBatteryTiers();
+
+        GetBatteryTiersResponse.Builder responseBuilder = GetBatteryTiersResponse.newBuilder();
+        for (BatteryTiersType batteryTier : batteryTiers) {
+            BatteryTier.Builder batteryTierBuilder = BatteryTier.newBuilder()
+                    .setBatteryTierId(batteryTier.getBatteryTierId())
+                    .setBatteryTierLabel(batteryTier.getBatteryTierLabel());
+
+            responseBuilder.addBatteryTierList(batteryTierBuilder.build());
+        }
+
+        GetBatteryTiersResponse response = responseBuilder.build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+
+        logger.info("getBatteryTiers() completed");
+    }
+
     private List<BatteryTypeTierPair> getBatteryTypeTierInfo(List<BatteryInfoType> batteryInfoTypes) {
         return batteryInfoTypes.stream()
                 .map(batteryInfoType -> BatteryTypeTierPair.newBuilder()
                         .setBatteryTypeId(batteryInfoType.getBatteryTypeId())
-                        .setBatteryTierId(batteryInfoType.getBatteryTierId())
+                        .setBatteryTierId(batteryInfoType.getTierId())
                         .build())
                 .collect(Collectors.toList());
     }

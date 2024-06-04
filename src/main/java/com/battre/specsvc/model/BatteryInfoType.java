@@ -27,8 +27,8 @@ public class BatteryInfoType {
     @Column(name = "terminal_layout_id")
     private int terminalLayoutId;
 
-    @Column(name = "battery_tier_id")
-    private int batteryTierId;
+    @Column(name = "tier_id")
+    private int tierId;
 
     @Column(name = "composition")
     private String composition;
@@ -51,10 +51,10 @@ public class BatteryInfoType {
     public BatteryInfoType() {
     }
 
-    public BatteryInfoType(int batteryTypeId, int terminalLayoutId, int batteryTierId) {
+    public BatteryInfoType(int batteryTypeId, int terminalLayoutId, int tierId) {
         this.batteryTypeId = batteryTypeId;
         this.terminalLayoutId = terminalLayoutId;
-        this.batteryTierId = batteryTierId;
+        this.tierId = tierId;
     }
 
     public int getBatteryTypeId() {
@@ -97,12 +97,12 @@ public class BatteryInfoType {
         this.terminalLayoutId = terminalLayoutId;
     }
 
-    public int getBatteryTierId() {
-        return batteryTierId;
+    public int getTierId() {
+        return tierId;
     }
 
-    public void setBatteryTierId(int batteryTierId) {
-        this.batteryTierId = batteryTierId;
+    public void setTierId(int tierId) {
+        this.tierId = tierId;
     }
 
     public String getComposition() {
