@@ -26,6 +26,6 @@ CREATE TABLE IF NOT EXISTS SpecSvcSchema.BatteryInfo (
   max_voltage DECIMAL(10,3),
   min_current DECIMAL(10,3),
   max_current DECIMAL(10,3),
-  CONSTRAINT terminal_layout_id_fk FOREIGN KEY (terminal_layout_id) REFERENCES TerminalLayouts(terminal_layout_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT tier_id_fk FOREIGN KEY (tier_id) REFERENCES BatteryTiers(tier_id) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT terminal_layout_id_fk FOREIGN KEY (terminal_layout_id) REFERENCES SpecSvcSchema.TerminalLayouts(terminal_layout_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT tier_id_fk FOREIGN KEY (tier_id) REFERENCES SpecSvcSchema.BatteryTiers(tier_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

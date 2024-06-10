@@ -37,16 +37,16 @@ public class BatteryInfoType {
     private String safetyInfo;
 
     @Column(name = "min_voltage")
-    private double minVoltage;
+    private Double minVoltage;
 
     @Column(name = "max_voltage")
-    private double maxVoltage;
+    private Double maxVoltage;
 
     @Column(name = "min_current")
-    private double minCurrent;
+    private Double minCurrent;
 
     @Column(name = "max_current")
-    private double maxCurrent;
+    private Double maxCurrent;
 
     public BatteryInfoType() {
     }
@@ -121,35 +121,35 @@ public class BatteryInfoType {
         this.safetyInfo = safetyInfo;
     }
 
-    public double getMinVoltage() {
+    public Double getMinVoltage() {
         return minVoltage;
     }
 
-    public void setMinVoltage(double minVoltage) {
+    public void setMinVoltage(Double minVoltage) {
         this.minVoltage = minVoltage;
     }
 
-    public double getMaxVoltage() {
+    public Double getMaxVoltage() {
         return maxVoltage;
     }
 
-    public void setMaxVoltage(double maxVoltage) {
+    public void setMaxVoltage(Double maxVoltage) {
         this.maxVoltage = maxVoltage;
     }
 
-    public double getMinCurrent() {
+    public Double getMinCurrent() {
         return minCurrent;
     }
 
-    public void setMinCurrent(double minCurrent) {
+    public void setMinCurrent(Double minCurrent) {
         this.minCurrent = minCurrent;
     }
 
-    public double getMaxCurrent() {
+    public Double getMaxCurrent() {
         return maxCurrent;
     }
 
-    public void setMaxCurrent(double maxCurrent) {
+    public void setMaxCurrent(Double maxCurrent) {
         this.maxCurrent = maxCurrent;
     }
 }

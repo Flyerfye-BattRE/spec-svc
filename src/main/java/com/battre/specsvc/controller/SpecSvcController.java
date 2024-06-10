@@ -17,6 +17,9 @@ import com.battre.stubs.services.GetBatteryTiersResponse;
 import com.battre.stubs.services.GetRandomBatteryTypesRequest;
 import com.battre.stubs.services.GetRandomBatteryTypesResponse;
 import com.battre.stubs.services.SpecSvcGrpc;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.StringValue;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,12 +90,23 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
                     .setMfc(batterySpec.getMfc())
                     .setTerminalLayoutId(batterySpec.getTerminalLayoutId())
                     .setTierId(batterySpec.getTierId())
-                    .setComposition(batterySpec.getComposition())
-                    .setSafetyInfo(batterySpec.getSafetyInfo())
-                    .setMinVoltage(batterySpec.getMinVoltage())
-                    .setMaxVoltage(batterySpec.getMaxVoltage())
-                    .setMinCurrent(batterySpec.getMinCurrent())
-                    .setMaxCurrent(batterySpec.getMaxCurrent());
+                    .setComposition(batterySpec.getComposition());
+
+            if(batterySpec.getSafetyInfo() != null) {
+                batteryTierBuilder.setOptionalSafetyInfo(StringValue.of(batterySpec.getSafetyInfo()));
+            }
+            if(batterySpec.getMinVoltage() != null) {
+                batteryTierBuilder.setOptionalMinVoltage(DoubleValue.of(batterySpec.getMinVoltage()));
+            }
+            if(batterySpec.getMaxVoltage() != null) {
+                batteryTierBuilder.setOptionalMaxVoltage(DoubleValue.of(batterySpec.getMaxVoltage()));
+            }
+            if(batterySpec.getMinCurrent() != null) {
+                batteryTierBuilder.setOptionalMinCurrent(DoubleValue.of(batterySpec.getMinCurrent()));
+            }
+            if(batterySpec.getMaxCurrent() != null) {
+                batteryTierBuilder.setOptionalMaxCurrent(DoubleValue.of(batterySpec.getMaxCurrent()));
+            }
 
             responseBuilder.addBatterySpecsList(batteryTierBuilder.build());
         }
