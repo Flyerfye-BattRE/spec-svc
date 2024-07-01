@@ -18,15 +18,13 @@ import com.battre.stubs.services.GetRandomBatteryTypesRequest;
 import com.battre.stubs.services.GetRandomBatteryTypesResponse;
 import com.battre.stubs.services.SpecSvcGrpc;
 import com.google.protobuf.DoubleValue;
-import com.google.protobuf.Int32Value;
 import com.google.protobuf.StringValue;
 import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @GrpcService
 public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
@@ -92,19 +90,19 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
                     .setTierId(batterySpec.getTierId())
                     .setComposition(batterySpec.getComposition());
 
-            if(batterySpec.getSafetyInfo() != null) {
+            if (batterySpec.getSafetyInfo() != null) {
                 batteryTierBuilder.setOptionalSafetyInfo(StringValue.of(batterySpec.getSafetyInfo()));
             }
-            if(batterySpec.getMinVoltage() != null) {
+            if (batterySpec.getMinVoltage() != null) {
                 batteryTierBuilder.setOptionalMinVoltage(DoubleValue.of(batterySpec.getMinVoltage()));
             }
-            if(batterySpec.getMaxVoltage() != null) {
+            if (batterySpec.getMaxVoltage() != null) {
                 batteryTierBuilder.setOptionalMaxVoltage(DoubleValue.of(batterySpec.getMaxVoltage()));
             }
-            if(batterySpec.getMinCurrent() != null) {
+            if (batterySpec.getMinCurrent() != null) {
                 batteryTierBuilder.setOptionalMinCurrent(DoubleValue.of(batterySpec.getMinCurrent()));
             }
-            if(batterySpec.getMaxCurrent() != null) {
+            if (batterySpec.getMaxCurrent() != null) {
                 batteryTierBuilder.setOptionalMaxCurrent(DoubleValue.of(batterySpec.getMaxCurrent()));
             }
 

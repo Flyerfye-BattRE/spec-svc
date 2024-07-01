@@ -10,12 +10,12 @@ import java.util.List;
 
 @Repository
 public interface BatteryInfoRepository extends JpaRepository<BatteryInfoType, Integer> {
-    @Query("SELECT bit FROM BatteryInfoType bit ORDER BY RANDOM() LIMIT :numValues")
-    List<BatteryInfoType> getRandomBatteries(@Param("numValues") int numValues);
+  @Query("SELECT bit FROM BatteryInfoType bit ORDER BY RANDOM() LIMIT :numValues")
+  List<BatteryInfoType> getRandomBatteries(@Param("numValues") int numValues);
 
-    @Query("SELECT bit FROM BatteryInfoType bit WHERE batteryTypeId IN :ids ORDER BY batteryTypeId")
-    List<BatteryInfoType> getBatterySpecsByTypeId(@Param("ids") List<Integer> ids);
+  @Query("SELECT bit FROM BatteryInfoType bit WHERE batteryTypeId IN :ids ORDER BY batteryTypeId")
+  List<BatteryInfoType> getBatterySpecsByTypeId(@Param("ids") List<Integer> ids);
 
-    @Query("SELECT bit FROM BatteryInfoType bit ORDER BY batteryTypeId")
-    List<BatteryInfoType> getAllBatterySpecs();
+  @Query("SELECT bit FROM BatteryInfoType bit ORDER BY batteryTypeId")
+  List<BatteryInfoType> getAllBatterySpecs();
 }
