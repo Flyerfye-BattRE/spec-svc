@@ -16,62 +16,62 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class BatteryInfoRepositoryTest {
-    private static final Logger logger = Logger.getLogger(BatteryInfoRepositoryTest.class.getName());
+  private static final Logger logger = Logger.getLogger(BatteryInfoRepositoryTest.class.getName());
 
-    @Autowired
-    private BatteryInfoRepository batteryInfoRepository;
+  @Autowired private BatteryInfoRepository batteryInfoRepository;
 
-    @Test
-    public void testGetRandomBatteries() {
-        // Call the method under test
-        List<BatteryInfoType> randomBatteries = batteryInfoRepository.getRandomBatteries(3);
+  @Test
+  public void testGetRandomBatteries() {
+    // Call the method under test
+    List<BatteryInfoType> randomBatteries = batteryInfoRepository.getRandomBatteries(3);
 
-        // Verify the result
-        assertNotNull(randomBatteries);
-        assertEquals(3, randomBatteries.size());
-        // All entries in the test database are expected to have the same test manufacturer
-        for (BatteryInfoType battery : randomBatteries) {
-            assertEquals("Test Manufacturer", battery.getMfc());
-        }
+    // Verify the result
+    assertNotNull(randomBatteries);
+    assertEquals(3, randomBatteries.size());
+    // All entries in the test database are expected to have the same test manufacturer
+    for (BatteryInfoType battery : randomBatteries) {
+      assertEquals("Test Manufacturer", battery.getMfc());
     }
+  }
 
-    @Test
-    public void testGetBatterySpecsByTypeId() {
-        List<Integer> batteryTypeIds = Arrays.asList(1, 2);
+  @Test
+  public void testGetBatterySpecsByTypeId() {
+    List<Integer> batteryTypeIds = Arrays.asList(1, 2);
 
-        // Call the method under test
-        List<BatteryInfoType> selectBatterySpecs = batteryInfoRepository.getBatterySpecsByTypeId(batteryTypeIds);
+    // Call the method under test
+    List<BatteryInfoType> selectBatterySpecs =
+        batteryInfoRepository.getBatterySpecsByTypeId(batteryTypeIds);
 
-        // Verify the result
-        assertNotNull(selectBatterySpecs);
-        assertEquals(2, selectBatterySpecs.size());
+    // Verify the result
+    assertNotNull(selectBatterySpecs);
+    assertEquals(2, selectBatterySpecs.size());
 
-        // Check properties of first battery returned
-        assertEquals(1, selectBatterySpecs.get(0).getBatteryTypeId());
-        assertEquals(5, selectBatterySpecs.get(0).getTierId());
+    // Check properties of first battery returned
+    assertEquals(1, selectBatterySpecs.get(0).getBatteryTypeId());
+    assertEquals(5, selectBatterySpecs.get(0).getTierId());
 
-        // Check properties of second battery returned
-        assertEquals(2, selectBatterySpecs.get(1).getBatteryTypeId());
-        assertEquals(7, selectBatterySpecs.get(1).getTierId());
-    }
+    // Check properties of second battery returned
+    assertEquals(2, selectBatterySpecs.get(1).getBatteryTypeId());
+    assertEquals(7, selectBatterySpecs.get(1).getTierId());
+  }
 
-    @Test
-    public void testGetAllBatterySpecs() {
-        // Call the method under test
-        List<BatteryInfoType> allBatterySpecs = batteryInfoRepository.getAllBatterySpecs();
+  @Test
+  public void testGetAllBatterySpecs() {
+    // Call the method under test
+    List<BatteryInfoType> allBatterySpecs = batteryInfoRepository.getAllBatterySpecs();
 
-        // Verify the result
-        assertNotNull(allBatterySpecs);
-        assertEquals(3, allBatterySpecs.size());
+    // Verify the result
+    assertNotNull(allBatterySpecs);
+    assertEquals(3, allBatterySpecs.size());
 
-        // Check properties of first battery returned
-        assertEquals(1, allBatterySpecs.get(0).getBatteryTypeId());
-        assertEquals(5, allBatterySpecs.get(0).getTierId());
-        assertEquals(10, allBatterySpecs.get(0).getMaxVoltage());
+    // Check properties of first battery returned
+    assertEquals(1, allBatterySpecs.get(0).getBatteryTypeId());
+    assertEquals(5, allBatterySpecs.get(0).getTierId());
+    assertEquals(10, allBatterySpecs.get(0).getMaxVoltage());
 
-        // Check properties of second battery returned
-        assertEquals(2, allBatterySpecs.get(1).getBatteryTypeId());
-        assertEquals(7, allBatterySpecs.get(1).getTierId());
-        assertEquals(40, allBatterySpecs.get(1).getMaxCurrent());
-    }
+    // Check properties of second battery returned
+    assertEquals(2, allBatterySpecs.get(1).getBatteryTypeId());
+    assertEquals(7, allBatterySpecs.get(1).getTierId());
+    assertEquals(40, allBatterySpecs.get(1).getMaxCurrent());
+  }
 }

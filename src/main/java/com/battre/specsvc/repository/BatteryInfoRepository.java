@@ -18,15 +18,16 @@ public interface BatteryInfoRepository extends JpaRepository<BatteryInfoType, In
   @Query("SELECT bit FROM BatteryInfoType bit ORDER BY batteryTypeId")
   List<BatteryInfoType> getAllBatterySpecs();
 
-  @Query("SELECT CAST(MIN(bit.minVoltage) AS DOUBLE), " +
-                  "CAST(MAX(bit.maxVoltage) AS DOUBLE), " +
-                  "CAST(MIN(bit.minCurrent) AS DOUBLE), " +
-                  "CAST(MAX(bit.maxCurrent) AS DOUBLE) " +
-                  "FROM BatteryInfoType bit")
+  @Query(
+      "SELECT CAST(MIN(bit.minVoltage) AS DOUBLE), "
+          + "CAST(MAX(bit.maxVoltage) AS DOUBLE), "
+          + "CAST(MIN(bit.minCurrent) AS DOUBLE), "
+          + "CAST(MAX(bit.maxCurrent) AS DOUBLE) "
+          + "FROM BatteryInfoType bit")
   List<Object[]> getMinMaxBatterySpecs();
 
   @Query("SELECT count(*) FROM BatteryInfoType bit")
-  Integer  countBatterySpecs();
+  Integer countBatterySpecs();
 
   @Query(
       "SELECT btt.tierLabel, COUNT(DISTINCT bit.batteryTypeId) AS count "

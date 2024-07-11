@@ -9,18 +9,19 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class SpecsvcApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SpecsvcApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(SpecsvcApplication.class, args);
+  }
 
-    // Needed bc existing DB naming convention is UpperCamelCase while HibernateJPA forces snake_case, causing issues
-    @Bean
-    public HibernatePropertiesCustomizer hibernatePropertiesCustomizer() {
-        return new HibernatePropertiesCustomizer() {
-            @Override
-            public void customize(Map<String, Object> hibernateProperties) {
-                hibernateProperties.put("hibernate.physical_naming_strategy", CustomNamingStrategy.class);
-            }
-        };
-    }
+  // Needed bc existing DB naming convention is UpperCamelCase while HibernateJPA forces snake_case,
+  // causing issues
+  @Bean
+  public HibernatePropertiesCustomizer hibernatePropertiesCustomizer() {
+    return new HibernatePropertiesCustomizer() {
+      @Override
+      public void customize(Map<String, Object> hibernateProperties) {
+        hibernateProperties.put("hibernate.physical_naming_strategy", CustomNamingStrategy.class);
+      }
+    };
+  }
 }

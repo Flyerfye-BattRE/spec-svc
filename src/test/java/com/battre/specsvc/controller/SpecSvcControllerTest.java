@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.battre.specsvc.service.SpecSvc;
 import com.battre.specsvc.model.BatteryInfoType;
 import com.battre.specsvc.model.BatteryTiersType;
 import com.battre.specsvc.repository.BatteryInfoRepository;
 import com.battre.specsvc.repository.BatteryTiersRepository;
+import com.battre.specsvc.service.SpecSvc;
 import com.battre.stubs.services.GetAllBatterySpecsRequest;
 import com.battre.stubs.services.GetAllBatterySpecsResponse;
 import com.battre.stubs.services.GetBatteryTerminalLayoutsRequest;
