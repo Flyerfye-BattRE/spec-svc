@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.battre.specsvc.service.SpecSvc;
 import com.battre.specsvc.model.BatteryInfoType;
 import com.battre.specsvc.model.BatteryTiersType;
 import com.battre.specsvc.repository.BatteryInfoRepository;
@@ -28,6 +29,8 @@ import org.mockito.MockitoAnnotations;
 
 public class SpecSvcControllerTest {
     @Mock
+    private SpecSvc specSvc;
+    @Mock
     private BatteryInfoRepository batteryInfoRepo;
     @Mock
     private BatteryTiersRepository batteryTiersRepo;
@@ -49,7 +52,7 @@ public class SpecSvcControllerTest {
     @BeforeEach
     public void openMocks() {
         closeable = MockitoAnnotations.openMocks(this);
-        specSvcController = new SpecSvcController(batteryInfoRepo, batteryTiersRepo);
+        specSvcController = new SpecSvcController(specSvc);
     }
 
     @AfterEach
