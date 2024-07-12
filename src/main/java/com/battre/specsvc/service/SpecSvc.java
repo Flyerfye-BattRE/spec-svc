@@ -41,7 +41,13 @@ public class SpecSvc {
   }
 
   public Object[] getMinMaxBatterySpecs() {
-    return batteryInfoRepo.getMinMaxBatterySpecs().get(0);
+    List<Object[]> minMaxBatterySpecs = batteryInfoRepo.getMinMaxBatterySpecs();
+
+    if(minMaxBatterySpecs.size() == 1) {
+      return minMaxBatterySpecs.get(0);
+    } else {
+      return null;
+    }
   }
 
   public List<TierCount> getTierCounts() {
@@ -53,6 +59,10 @@ public class SpecSvc {
                 TierCount.newBuilder()
                     .setTier((String) tierCount[0])
                     .setCount(((Long) tierCount[1]).intValue())
+                    .setMinVoltage((Double) tierCount[2])
+                    .setMaxVoltage((Double) tierCount[3])
+                    .setMinCurrent((Double) tierCount[4])
+                    .setMaxCurrent((Double) tierCount[5])
                     .build())
         .collect(Collectors.toList());
   }

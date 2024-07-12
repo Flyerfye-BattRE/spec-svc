@@ -22,7 +22,6 @@ public class BatteryInfoRepositoryTests {
 
   @Test
   public void testGetRandomBatteries() {
-    // Call the method under test
     List<BatteryInfoType> randomBatteries = batteryInfoRepository.getRandomBatteries(3);
 
     // Verify the result
@@ -38,7 +37,6 @@ public class BatteryInfoRepositoryTests {
   public void testGetBatterySpecsByTypeId() {
     List<Integer> batteryTypeIds = Arrays.asList(1, 2);
 
-    // Call the method under test
     List<BatteryInfoType> selectBatterySpecs =
         batteryInfoRepository.getBatterySpecsByTypeId(batteryTypeIds);
 
@@ -57,7 +55,6 @@ public class BatteryInfoRepositoryTests {
 
   @Test
   public void testGetAllBatterySpecs() {
-    // Call the method under test
     List<BatteryInfoType> allBatterySpecs = batteryInfoRepository.getAllBatterySpecs();
 
     // Verify the result
@@ -73,5 +70,46 @@ public class BatteryInfoRepositoryTests {
     assertEquals(2, allBatterySpecs.get(1).getBatteryTypeId());
     assertEquals(7, allBatterySpecs.get(1).getTierId());
     assertEquals(40, allBatterySpecs.get(1).getMaxCurrent());
+  }
+
+  @Test
+  public void testGetMinMaxBatterySpecs() {
+    List<Object[]> minMaxBatterySpecsList = batteryInfoRepository.getMinMaxBatterySpecs();
+
+    // Verify the result
+    assertNotNull(minMaxBatterySpecsList);
+    assertEquals(1, minMaxBatterySpecsList.size());
+
+    Object[] minMaxBatterySpecs = minMaxBatterySpecsList.get(0);
+    assertEquals(0.0, (Double) minMaxBatterySpecs[0]);
+    assertEquals(20.0, (Double) minMaxBatterySpecs[1]);
+    assertEquals(0.0, (Double) minMaxBatterySpecs[2]);
+    assertEquals(40.0, (Double) minMaxBatterySpecs[3]);
+  }
+
+  @Test
+  public void testCountBatterySpecs() {
+    Integer batterySpecsCount = batteryInfoRepository.countBatterySpecs();
+
+    // Verify the result
+    assertNotNull(batterySpecsCount);
+    assertEquals(3, batterySpecsCount);
+  }
+
+  @Test
+  public void testGetTierCounts() {
+    List<Object[]> tierCountsList = batteryInfoRepository.getTierCounts();
+
+    // Verify the result
+    assertNotNull(tierCountsList);
+    assertEquals(3, tierCountsList.size());
+
+    Object[] tierCount = tierCountsList.get(0);
+    assertEquals("CX", tierCount[0]);
+    assertEquals(1L, tierCount[1]);
+    assertEquals(0.0, tierCount[2]);
+    assertEquals(5.0, tierCount[3]);
+    assertEquals(0.0, tierCount[4]);
+    assertEquals(20.0, tierCount[5]);
   }
 }

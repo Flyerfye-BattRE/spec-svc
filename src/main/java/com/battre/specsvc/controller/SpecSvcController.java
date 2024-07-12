@@ -23,6 +23,7 @@ import com.google.protobuf.DoubleValue;
 import com.google.protobuf.StringValue;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -88,6 +89,10 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
     logger.info("getAllBatterySpecs() started");
 
     List<BatteryInfoType> batterySpecs = specSvc.getAllBatterySpecs();
+    List<BatteryTiersType> batteryTiers = specSvc.getBatteryTiers();
+
+    Map<Integer, String> tierMap = batteryTiers.stream()
+            .collect(Collectors.toMap(BatteryTiersType::getBatteryTierId, BatteryTiersType::getBatteryTierLabel));
 
     GetAllBatterySpecsResponse.Builder responseBuilder = GetAllBatterySpecsResponse.newBuilder();
     for (BatteryInfoType batterySpec : batterySpecs) {
@@ -96,7 +101,7 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
               .setBatteryTypeId(batterySpec.getBatteryTypeId())
               .setMfc(batterySpec.getMfc())
               .setTerminalLayoutId(batterySpec.getTerminalLayoutId())
-              .setTierId(batterySpec.getTierId())
+              .setTierLabel(tierMap.get(batterySpec.getTierId()))
               .setComposition(batterySpec.getComposition());
 
       if (batterySpec.getSafetyInfo() != null) {
@@ -168,7 +173,13 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
 
     for (TierCount tierCount : tierCountsList) {
       TierCount.Builder tierCountBuilder =
-          TierCount.newBuilder().setTier(tierCount.getTier()).setCount(tierCount.getCount());
+          TierCount.newBuilder()
+                  .setTier(tierCount.getTier())
+                  .setCount(tierCount.getCount())
+                  .setMinVoltage(tierCount.getMinVoltage())
+                  .setMaxVoltage(tierCount.getMaxVoltage())
+                  .setMinCurrent(tierCount.getMinCurrent())
+                  .setMaxCurrent(tierCount.getMaxCurrent());
 
       responseBuilder.addTierCountList(tierCountBuilder.build());
     }

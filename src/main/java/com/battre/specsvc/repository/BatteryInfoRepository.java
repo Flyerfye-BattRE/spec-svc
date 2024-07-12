@@ -30,7 +30,12 @@ public interface BatteryInfoRepository extends JpaRepository<BatteryInfoType, In
   Integer countBatterySpecs();
 
   @Query(
-      "SELECT btt.tierLabel, COUNT(DISTINCT bit.batteryTypeId) AS count "
+      "SELECT btt.tierLabel, "
+          + "COUNT(DISTINCT bit.batteryTypeId) AS count, "
+          + "CAST(MIN(bit.minVoltage) AS DOUBLE), "
+          + "CAST(MAX(bit.maxVoltage) AS DOUBLE), "
+          + "CAST(MIN(bit.minCurrent) AS DOUBLE), "
+          + "CAST(MAX(bit.maxCurrent) AS DOUBLE) "
           + "FROM BatteryInfoType bit "
           + "JOIN BatteryTiersType btt ON bit.tierId = btt.tierId "
           + "GROUP BY btt.tierLabel")

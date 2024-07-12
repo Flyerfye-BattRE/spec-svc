@@ -18,6 +18,9 @@ import com.battre.stubs.services.GetBatteryTiersRequest;
 import com.battre.stubs.services.GetBatteryTiersResponse;
 import com.battre.stubs.services.GetRandomBatteryTypesRequest;
 import com.battre.stubs.services.GetRandomBatteryTypesResponse;
+import com.battre.stubs.services.GetSpecSvcOverviewRequest;
+import com.battre.stubs.services.GetSpecSvcOverviewResponse;
+import com.battre.stubs.services.TierCount;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -28,174 +31,236 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class SpecSvcControllerTests {
-    @Mock
-    private SpecSvc specSvc;
-    @Mock
-    private BatteryInfoRepository batteryInfoRepo;
-    @Mock
-    private BatteryTiersRepository batteryTiersRepo;
+  @Mock private SpecSvc specSvc;
+  @Mock private BatteryInfoRepository batteryInfoRepo;
+  @Mock private BatteryTiersRepository batteryTiersRepo;
 
-    @Mock
-    private StreamObserver<GetRandomBatteryTypesResponse> responseGetRandomBatteryTypesResponse;
+  @Mock private StreamObserver<GetRandomBatteryTypesResponse> responseGetRandomBatteryTypesResponse;
 
-    @Mock
-    private StreamObserver<GetBatteryTerminalLayoutsResponse> responseGetBatteryTerminalLayoutsResponse;
-    @Mock
-    private StreamObserver<GetAllBatterySpecsResponse> responseGetAllBatterySpecsResponse;
-    @Mock
-    private StreamObserver<GetBatteryTiersResponse> responseGetBatteryTiersResponse;
+  @Mock
+  private StreamObserver<GetBatteryTerminalLayoutsResponse>
+      responseGetBatteryTerminalLayoutsResponse;
 
-    private SpecSvcController specSvcController;
+  @Mock private StreamObserver<GetAllBatterySpecsResponse> responseGetAllBatterySpecsResponse;
+  @Mock private StreamObserver<GetBatteryTiersResponse> responseGetBatteryTiersResponse;
+  @Mock private StreamObserver<GetSpecSvcOverviewResponse> responseGetSpecSvcOverviewResponse;
 
-    private AutoCloseable closeable;
+  private SpecSvcController specSvcController;
 
-    @BeforeEach
-    public void openMocks() {
-        closeable = MockitoAnnotations.openMocks(this);
-        specSvcController = new SpecSvcController(specSvc);
+  private AutoCloseable closeable;
+
+  @BeforeEach
+  public void openMocks() {
+    closeable = MockitoAnnotations.openMocks(this);
+    specSvcController = new SpecSvcController(specSvc);
+  }
+
+  @AfterEach
+  public void releaseMocks() throws Exception {
+    closeable.close();
+  }
+
+  @Test
+  void testGetRandomBatteryTypes() {
+    List<BatteryInfoType> returnedBattery = List.of(new BatteryInfoType(1, 5, 2));
+    when(specSvc.getRandomBatteries(1)).thenReturn(returnedBattery);
+
+    GetRandomBatteryTypesRequest request =
+        GetRandomBatteryTypesRequest.newBuilder().setNumBatteryTypes(1).build();
+
+    specSvcController.getRandomBatteryTypes(request, responseGetRandomBatteryTypesResponse);
+    verify(specSvc).getRandomBatteries(1);
+    // Capture the response
+    ArgumentCaptor<GetRandomBatteryTypesResponse> responseCaptor =
+        ArgumentCaptor.forClass(GetRandomBatteryTypesResponse.class);
+    verify(responseGetRandomBatteryTypesResponse).onNext(responseCaptor.capture());
+    verify(responseGetRandomBatteryTypesResponse).onCompleted();
+
+    GetRandomBatteryTypesResponse response = responseCaptor.getValue();
+    assertNotNull(response);
+    assertEquals(returnedBattery.size(), response.getBatteriesCount());
+    for (int i = 0; i < returnedBattery.size(); i++) {
+      assertEquals(
+          returnedBattery.get(i).getBatteryTypeId(), response.getBatteries(i).getBatteryTypeId());
+      assertEquals(returnedBattery.get(i).getTierId(), response.getBatteries(i).getBatteryTierId());
     }
+  }
 
-    @AfterEach
-    public void releaseMocks() throws Exception {
-        closeable.close();
+  @Test
+  void testGetBatteryTerminalLayouts() {
+    List<BatteryInfoType> returnedBattery = List.of(new BatteryInfoType(3, 2, 1));
+    List<Integer> testBatteryTypeIds = List.of(3);
+    when(specSvc.getBatterySpecsByTypeId(testBatteryTypeIds)).thenReturn(returnedBattery);
+
+    GetBatteryTerminalLayoutsRequest request =
+        GetBatteryTerminalLayoutsRequest.newBuilder()
+            .addAllBatteryTypeIds(testBatteryTypeIds)
+            .build();
+
+    specSvcController.getBatteryTerminalLayouts(request, responseGetBatteryTerminalLayoutsResponse);
+    verify(specSvc).getBatterySpecsByTypeId(testBatteryTypeIds);
+    // Capture the response
+    ArgumentCaptor<GetBatteryTerminalLayoutsResponse> responseCaptor =
+        ArgumentCaptor.forClass(GetBatteryTerminalLayoutsResponse.class);
+    verify(responseGetBatteryTerminalLayoutsResponse).onNext(responseCaptor.capture());
+    verify(responseGetBatteryTerminalLayoutsResponse).onCompleted();
+
+    GetBatteryTerminalLayoutsResponse response = responseCaptor.getValue();
+    assertNotNull(response);
+    assertEquals(returnedBattery.size(), response.getBatteriesCount());
+    for (int i = 0; i < returnedBattery.size(); i++) {
+      assertEquals(
+          returnedBattery.get(i).getBatteryTypeId(), response.getBatteries(i).getBatteryTypeId());
+      assertEquals(
+          returnedBattery.get(i).getTerminalLayoutId(),
+          response.getBatteries(i).getBatteryTerminalLayoutId());
     }
+  }
 
-    @Test
-    void testGetRandomBatteryTypes() {
-        List<BatteryInfoType> returnedBattery = List.of(
-                new BatteryInfoType(1, 5, 2)
-        );
-        when(batteryInfoRepo.getRandomBatteries(1)).thenReturn(returnedBattery);
+  @Test
+  void testGetAllBatterySpecs() {
+    List<BatteryInfoType> returnedBatterySpecs =
+        List.of(
+            populateBatteryInfoType(1, 2, 3, "testMfc", "Nickle stuff", "V dangerous", 1, 2, 3, 4),
+            populateBatteryInfoType(2, 4, 6, "otherMfc", "Irony", "Safest", 2, 4, 6, 8));
+    List<BatteryTiersType> returnedBatteryTiers =
+        List.of(populateBatteryTiersType(3, "AX"), populateBatteryTiersType(6, "L"));
 
-        GetRandomBatteryTypesRequest request = GetRandomBatteryTypesRequest.newBuilder().setNumBatteryTypes(1).build();
+    when(specSvc.getAllBatterySpecs()).thenReturn(returnedBatterySpecs);
+    when(specSvc.getBatteryTiers()).thenReturn(returnedBatteryTiers);
 
-        specSvcController.getRandomBatteryTypes(request, responseGetRandomBatteryTypesResponse);
-        verify(batteryInfoRepo).getRandomBatteries(1);
-        // Capture the response
-        ArgumentCaptor<GetRandomBatteryTypesResponse> responseCaptor = ArgumentCaptor.forClass(GetRandomBatteryTypesResponse.class);
-        verify(responseGetRandomBatteryTypesResponse).onNext(responseCaptor.capture());
-        verify(responseGetRandomBatteryTypesResponse).onCompleted();
+    GetAllBatterySpecsRequest request = GetAllBatterySpecsRequest.newBuilder().build();
 
-        GetRandomBatteryTypesResponse response = responseCaptor.getValue();
-        assertNotNull(response);
-        assertEquals(returnedBattery.size(), response.getBatteriesCount());
-        for (int i = 0; i < returnedBattery.size(); i++) {
-            assertEquals(returnedBattery.get(i).getBatteryTypeId(), response.getBatteries(i).getBatteryTypeId());
-            assertEquals(returnedBattery.get(i).getTierId(), response.getBatteries(i).getBatteryTierId());
-        }
+    specSvcController.getAllBatterySpecs(request, responseGetAllBatterySpecsResponse);
+
+    verify(specSvc).getAllBatterySpecs();
+    // Capture the response
+    ArgumentCaptor<GetAllBatterySpecsResponse> responseCaptor =
+        ArgumentCaptor.forClass(GetAllBatterySpecsResponse.class);
+    verify(responseGetAllBatterySpecsResponse).onNext(responseCaptor.capture());
+    verify(responseGetAllBatterySpecsResponse).onCompleted();
+
+    GetAllBatterySpecsResponse response = responseCaptor.getValue();
+    assertNotNull(response);
+    assertEquals(returnedBatterySpecs.size(), response.getBatterySpecsListCount());
+    for (int i = 0; i < returnedBatterySpecs.size(); i++) {
+      assertEquals(
+          returnedBatterySpecs.get(i).getBatteryTypeId(),
+          response.getBatterySpecsList(i).getBatteryTypeId());
+      assertEquals(
+          returnedBatterySpecs.get(i).getTerminalLayoutId(),
+          response.getBatterySpecsList(i).getTerminalLayoutId());
     }
+  }
 
-    @Test
-    void testGetBatteryTerminalLayouts() {
-        List<BatteryInfoType> returnedBattery = List.of(
-                new BatteryInfoType(3, 2, 1)
-        );
-        List<Integer> testBatteryTypeIds = List.of(3);
-        when(batteryInfoRepo.getBatterySpecsByTypeId(testBatteryTypeIds)).thenReturn(returnedBattery);
+  private BatteryInfoType populateBatteryInfoType(
+      int typeId,
+      int terminalLayoutId,
+      int tierId,
+      String mfc,
+      String composition,
+      String safetyInfo,
+      double minVoltage,
+      double maxVoltage,
+      double minCurrent,
+      double maxCurrent) {
+    BatteryInfoType returnedBattery = new BatteryInfoType(typeId, terminalLayoutId, tierId);
+    returnedBattery.setMfc(mfc);
+    returnedBattery.setComposition(composition);
+    returnedBattery.setSafetyInfo(safetyInfo);
+    returnedBattery.setMinVoltage(minVoltage);
+    returnedBattery.setMaxVoltage(maxVoltage);
+    returnedBattery.setMinCurrent(minCurrent);
+    returnedBattery.setMaxCurrent(maxCurrent);
 
-        GetBatteryTerminalLayoutsRequest request =
-                GetBatteryTerminalLayoutsRequest.newBuilder().addAllBatteryTypeIds(testBatteryTypeIds).build();
+    return returnedBattery;
+  }
 
-        specSvcController.getBatteryTerminalLayouts(request, responseGetBatteryTerminalLayoutsResponse);
-        verify(batteryInfoRepo).getBatterySpecsByTypeId(testBatteryTypeIds);
-        // Capture the response
-        ArgumentCaptor<GetBatteryTerminalLayoutsResponse> responseCaptor = ArgumentCaptor.forClass(GetBatteryTerminalLayoutsResponse.class);
-        verify(responseGetBatteryTerminalLayoutsResponse).onNext(responseCaptor.capture());
-        verify(responseGetBatteryTerminalLayoutsResponse).onCompleted();
+  private BatteryTiersType populateBatteryTiersType(int tierId, String tierLabel) {
+    BatteryTiersType returnedBattery = new BatteryTiersType(tierLabel);
+    returnedBattery.setBatteryTierId(tierId);
 
-        GetBatteryTerminalLayoutsResponse response = responseCaptor.getValue();
-        assertNotNull(response);
-        assertEquals(returnedBattery.size(), response.getBatteriesCount());
-        for (int i = 0; i < returnedBattery.size(); i++) {
-            assertEquals(returnedBattery.get(i).getBatteryTypeId(), response.getBatteries(i).getBatteryTypeId());
-            assertEquals(returnedBattery.get(i).getTerminalLayoutId(), response.getBatteries(i).getBatteryTerminalLayoutId());
-        }
+    return returnedBattery;
+  }
+
+  @Test
+  void testGetBatteryTiers() {
+    BatteryTiersType batteryTier = new BatteryTiersType();
+    batteryTier.setBatteryTierId(1);
+    batteryTier.setBatteryTierLabel("AX");
+
+    List<BatteryTiersType> returnedBatteryTiers = List.of(batteryTier);
+    when(specSvc.getBatteryTiers()).thenReturn(returnedBatteryTiers);
+
+    GetBatteryTiersRequest request = GetBatteryTiersRequest.newBuilder().build();
+
+    specSvcController.getBatteryTiers(request, responseGetBatteryTiersResponse);
+
+    verify(specSvc).getBatteryTiers();
+    // Capture the response
+    ArgumentCaptor<GetBatteryTiersResponse> responseCaptor =
+        ArgumentCaptor.forClass(GetBatteryTiersResponse.class);
+    verify(responseGetBatteryTiersResponse).onNext(responseCaptor.capture());
+    verify(responseGetBatteryTiersResponse).onCompleted();
+
+    GetBatteryTiersResponse response = responseCaptor.getValue();
+    assertNotNull(response);
+    assertEquals(returnedBatteryTiers.size(), response.getBatteryTierListCount());
+    for (int i = 0; i < returnedBatteryTiers.size(); i++) {
+      assertEquals(
+          returnedBatteryTiers.get(i).getBatteryTierId(),
+          response.getBatteryTierList(i).getBatteryTierId());
+      assertEquals(
+          returnedBatteryTiers.get(i).getBatteryTierLabel(),
+          response.getBatteryTierList(i).getBatteryTierLabel());
     }
+  }
 
-    @Test
-    void testGetAllBatterySpecs() {
+  @Test
+  void testGetSpecSvcOverview() {
+    Integer numBatterySpecs = 1;
+    Object[] minMaxBatterySpecs = {1.1D, 2.2D, 3.3D, 4.4D};
+    TierCount returnTierCount =
+        TierCount.newBuilder()
+            .setTier("AX")
+            .setCount(1)
+            .setMinVoltage(1.1)
+            .setMaxVoltage(2.2)
+            .setMinCurrent(3.3)
+            .setMaxCurrent(4.4)
+            .build();
+    List<TierCount> tierCountsList = List.of(returnTierCount);
 
-        List<BatteryInfoType> returnedBatteries = List.of(
-                populateBatteryInfoType(1, 2, 3, "testMfc", "Nickle stuff", "V dangerous", 1, 2, 3, 4),
-                populateBatteryInfoType(2, 4, 6, "otherMfc", "Irony", "Safest", 2, 4, 6, 8)
-        );
+    when(specSvc.countBatterySpecs()).thenReturn(numBatterySpecs);
+    when(specSvc.getMinMaxBatterySpecs()).thenReturn(minMaxBatterySpecs);
+    when(specSvc.getTierCounts()).thenReturn(tierCountsList);
 
-        when(batteryInfoRepo.getAllBatterySpecs()).thenReturn(returnedBatteries);
+    GetSpecSvcOverviewRequest request = GetSpecSvcOverviewRequest.newBuilder().build();
 
-        GetAllBatterySpecsRequest request =
-                GetAllBatterySpecsRequest.newBuilder().build();
+    specSvcController.getSpecSvcOverview(request, responseGetSpecSvcOverviewResponse);
 
-        specSvcController.getAllBatterySpecs(request, responseGetAllBatterySpecsResponse);
+    verify(specSvc).countBatterySpecs();
+    verify(specSvc).getMinMaxBatterySpecs();
+    verify(specSvc).getTierCounts();
 
-        verify(batteryInfoRepo).getAllBatterySpecs();
-        // Capture the response
-        ArgumentCaptor<GetAllBatterySpecsResponse> responseCaptor = ArgumentCaptor.forClass(GetAllBatterySpecsResponse.class);
-        verify(responseGetAllBatterySpecsResponse).onNext(responseCaptor.capture());
-        verify(responseGetAllBatterySpecsResponse).onCompleted();
+    // Capture the response
+    ArgumentCaptor<GetSpecSvcOverviewResponse> responseCaptor =
+        ArgumentCaptor.forClass(GetSpecSvcOverviewResponse.class);
+    verify(responseGetSpecSvcOverviewResponse).onNext(responseCaptor.capture());
+    verify(responseGetSpecSvcOverviewResponse).onCompleted();
 
-        GetAllBatterySpecsResponse response = responseCaptor.getValue();
-        assertNotNull(response);
-        assertEquals(returnedBatteries.size(), response.getBatterySpecsListCount());
-        for (int i = 0; i < returnedBatteries.size(); i++) {
-            assertEquals(returnedBatteries.get(i).getBatteryTypeId(), response.getBatterySpecsList(i).getBatteryTypeId());
-            assertEquals(returnedBatteries.get(i).getTerminalLayoutId(), response.getBatterySpecsList(i).getTerminalLayoutId());
-            assertEquals(returnedBatteries.get(i).getTierId(), response.getBatterySpecsList(i).getTierId());
-        }
-    }
+    GetSpecSvcOverviewResponse response = responseCaptor.getValue();
+    assertNotNull(response);
 
-    private BatteryInfoType populateBatteryInfoType(
-            int typeId,
-            int terminalLayoutId,
-            int tierId,
-            String mfc,
-            String composition,
-            String safetyInfo,
-            double minVoltage,
-            double maxVoltage,
-            double minCurrent,
-            double maxCurrent
-    ) {
-        BatteryInfoType returnedBattery = new BatteryInfoType(typeId, terminalLayoutId, tierId);
-        returnedBattery.setMfc(mfc);
-        returnedBattery.setComposition(composition);
-        returnedBattery.setSafetyInfo(safetyInfo);
-        returnedBattery.setMinVoltage(minVoltage);
-        returnedBattery.setMaxVoltage(maxVoltage);
-        returnedBattery.setMinCurrent(minCurrent);
-        returnedBattery.setMaxCurrent(maxCurrent);
+    assertEquals(numBatterySpecs, response.getSpecsCount());
 
-        return returnedBattery;
-    }
+    assertEquals((Double) minMaxBatterySpecs[0], response.getMinVoltage());
+    assertEquals((Double) minMaxBatterySpecs[1], response.getMaxVoltage());
+    assertEquals((Double) minMaxBatterySpecs[2], response.getMinCurrent());
+    assertEquals((Double) minMaxBatterySpecs[3], response.getMaxCurrent());
 
-    @Test
-    void testGetBatteryTiers() {
-        BatteryTiersType batteryTier = new BatteryTiersType();
-        batteryTier.setBatteryTierId(1);
-        batteryTier.setBatteryTierLabel("AX");
-
-        List<BatteryTiersType> returnedBatteryTiers = List.of(
-                batteryTier
-        );
-        when(batteryTiersRepo.getBatteryTiers()).thenReturn(returnedBatteryTiers);
-
-        GetBatteryTiersRequest request =
-                GetBatteryTiersRequest.newBuilder().build();
-
-        specSvcController.getBatteryTiers(request, responseGetBatteryTiersResponse);
-
-        verify(batteryTiersRepo).getBatteryTiers();
-        // Capture the response
-        ArgumentCaptor<GetBatteryTiersResponse> responseCaptor = ArgumentCaptor.forClass(GetBatteryTiersResponse.class);
-        verify(responseGetBatteryTiersResponse).onNext(responseCaptor.capture());
-        verify(responseGetBatteryTiersResponse).onCompleted();
-
-        GetBatteryTiersResponse response = responseCaptor.getValue();
-        assertNotNull(response);
-        assertEquals(returnedBatteryTiers.size(), response.getBatteryTierListCount());
-        for (int i = 0; i < returnedBatteryTiers.size(); i++) {
-            assertEquals(returnedBatteryTiers.get(i).getBatteryTierId(), response.getBatteryTierList(i).getBatteryTierId());
-            assertEquals(returnedBatteryTiers.get(i).getBatteryTierLabel(), response.getBatteryTierList(i).getBatteryTierLabel());
-        }
-
-    }
+    assertEquals(1, response.getTierCountListList().size());
+    TierCount responseTierCount = response.getTierCountListList().get(0);
+    assertEquals(returnTierCount, responseTierCount);
+  }
 }
