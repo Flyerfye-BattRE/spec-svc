@@ -27,7 +27,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class SpecSvcControllerTest {
+public class SpecSvcControllerTests {
     @Mock
     private SpecSvc specSvc;
     @Mock
