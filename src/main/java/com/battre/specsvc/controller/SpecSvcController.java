@@ -99,6 +99,7 @@ public class SpecSvcController extends SpecSvcGrpc.SpecSvcImplBase {
       BatterySpecs.Builder batteryTierBuilder =
           BatterySpecs.newBuilder()
               .setBatteryTypeId(batterySpec.getBatteryTypeId())
+              .setBatteryName(batterySpec.getBatteryName())
               .setMfc(batterySpec.getMfc())
               .setTerminalLayoutId(batterySpec.getTerminalLayoutId())
               .setTierLabel(tierMap.get(batterySpec.getTierId()))

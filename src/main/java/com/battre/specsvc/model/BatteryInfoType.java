@@ -15,6 +15,9 @@ public class BatteryInfoType {
   @Column(name = "battery_type_id")
   private int batteryTypeId;
 
+  @Column(name = "battery_name")
+  private String batteryName;
+
   @Column(name = "test_scheme_id")
   private int testSchemeId;
 
@@ -62,6 +65,14 @@ public class BatteryInfoType {
 
   public void setBatteryTypeId(int batteryTypeId) {
     this.batteryTypeId = batteryTypeId;
+  }
+
+  public String getBatteryName() {
+    return batteryName;
+  }
+
+  public void setBatteryName(String batteryName) {
+    this.batteryName = batteryName;
   }
 
   public int getTestSchemeId() {
