@@ -24,6 +24,11 @@ public class BatteryTiersType {
     this.tierLabel = tierLabel;
   }
 
+  public BatteryTiersType(Integer tierId, String tierLabel) {
+    this.tierId = tierId;
+    this.tierLabel = tierLabel;
+  }
+
   public Integer getBatteryTierId() {
     return tierId;
   }

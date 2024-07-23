@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest(properties = "grpc.server.port=9012")
 class SpecSvcTests {
     @Mock private BatteryInfoRepository batteryInfoRepo;
     @Mock private BatteryTiersRepository batteryTiersRepo;

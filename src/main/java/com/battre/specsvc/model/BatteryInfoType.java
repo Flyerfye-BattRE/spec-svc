@@ -59,6 +59,35 @@ public class BatteryInfoType {
     this.tierId = tierId;
   }
 
+  public BatteryInfoType(
+      int batteryTypeId,
+      String batteryName,
+      int testSchemeId,
+      String mfc,
+      int mfcId,
+      int terminalLayoutId,
+      int tierId,
+      String composition,
+      String safetyInfo,
+      Double minVoltage,
+      Double maxVoltage,
+      Double minCurrent,
+      Double maxCurrent) {
+    this.batteryTypeId = batteryTypeId;
+    this.batteryName = batteryName;
+    this.testSchemeId = testSchemeId;
+    this.mfc = mfc;
+    this.mfcId = mfcId;
+    this.terminalLayoutId = terminalLayoutId;
+    this.tierId = tierId;
+    this.composition = composition;
+    this.safetyInfo = safetyInfo;
+    this.minVoltage = minVoltage;
+    this.maxVoltage = maxVoltage;
+    this.minCurrent = minCurrent;
+    this.maxCurrent = maxCurrent;
+  }
+
   public int getBatteryTypeId() {
     return batteryTypeId;
   }

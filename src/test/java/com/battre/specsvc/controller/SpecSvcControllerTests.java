@@ -29,7 +29,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest(properties = "grpc.server.port=9011")
 public class SpecSvcControllerTests {
   @Mock private SpecSvc specSvc;
   @Mock private BatteryInfoRepository batteryInfoRepo;
@@ -121,10 +123,10 @@ public class SpecSvcControllerTests {
   void testGetAllBatterySpecs() {
     List<BatteryInfoType> returnedBatterySpecs =
         List.of(
-            populateBatteryInfoType(1, 2, 3, "testMfc", "Nickle stuff", "V dangerous", 1, 2, 3, 4),
-            populateBatteryInfoType(2, 4, 6, "otherMfc", "Irony", "Safest", 2, 4, 6, 8));
+                new BatteryInfoType(1, "Battery1", 1, "testMfc", 1, 2, 3, "Nickle stuff", "V dangerous", 1D, 2D, 3D, 4D),
+                new BatteryInfoType(2, "Battery2", 2, "otherMfc", 2, 4, 6, "Irony", "Safest", 2D, 4D, 6D, 8D));
     List<BatteryTiersType> returnedBatteryTiers =
-        List.of(populateBatteryTiersType(3, "AX"), populateBatteryTiersType(6, "L"));
+            List.of(new BatteryTiersType(3, "AX"), new BatteryTiersType(6, "L"));
 
     when(specSvc.getAllBatterySpecs()).thenReturn(returnedBatterySpecs);
     when(specSvc.getBatteryTiers()).thenReturn(returnedBatteryTiers);
@@ -151,36 +153,6 @@ public class SpecSvcControllerTests {
           returnedBatterySpecs.get(i).getTerminalLayoutId(),
           response.getBatterySpecsList(i).getTerminalLayoutId());
     }
-  }
-
-  private BatteryInfoType populateBatteryInfoType(
-      int typeId,
-      int terminalLayoutId,
-      int tierId,
-      String mfc,
-      String composition,
-      String safetyInfo,
-      double minVoltage,
-      double maxVoltage,
-      double minCurrent,
-      double maxCurrent) {
-    BatteryInfoType returnedBattery = new BatteryInfoType(typeId, terminalLayoutId, tierId);
-    returnedBattery.setMfc(mfc);
-    returnedBattery.setComposition(composition);
-    returnedBattery.setSafetyInfo(safetyInfo);
-    returnedBattery.setMinVoltage(minVoltage);
-    returnedBattery.setMaxVoltage(maxVoltage);
-    returnedBattery.setMinCurrent(minCurrent);
-    returnedBattery.setMaxCurrent(maxCurrent);
-
-    return returnedBattery;
-  }
-
-  private BatteryTiersType populateBatteryTiersType(int tierId, String tierLabel) {
-    BatteryTiersType returnedBattery = new BatteryTiersType(tierLabel);
-    returnedBattery.setBatteryTierId(tierId);
-
-    return returnedBattery;
   }
 
   @Test
